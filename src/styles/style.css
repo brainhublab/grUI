@@ -1,0 +1,28 @@
+.navbar-brand {
+  outline: 0;
+  cursor: pointer;
+}
+
+.nav-link-active {
+  color: white !important;
+}
+
+.fa {
+  margin-right: 5px;
+}
+
+.mb-3 {
+  height: calc(50vh - 56px);
+}
+
+.dropdown-item-expansion {
+  padding: .25rem 1.5rem;
+}
+
+.dropdown-item:focus {
+  background-color: ;
+}
+
+.alert-success {
+  background-color: #d4edda !important;
+}
