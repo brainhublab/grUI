@@ -12,7 +12,7 @@ import Style from './styles/style.css'
 import reducer from './reducers'
 import initialState from './store/storeinit.js'
 import AppContainer from './containers/app-container.js'
-import { addData, addDevice } from './actions'
+import { addData, addDevice, removeDevice } from './actions'
 
 
 const store = createStore(
@@ -23,8 +23,16 @@ const store = createStore(
 // setInterval(() => store.dispatch(addData(0)), 100);
 // setInterval(() => store.dispatch(addData(1)), 100);
 
-store.dispatch(addDevice(0, {name: 'GR[L]', info: 'dev address', expanded: true, connected: true}));
-store.dispatch(addDevice(0, {name: 'GR[R]', info: 'dev address', expanded: false, connected: false}));
+let d = {
+  name: 'GR[L]',
+  address: '98:D3:31:80:91:3B',
+  connected: false,
+}
+
+store.dispatch(addDevice(d));
+setTimeout(() => {
+  store.dispatch(removeDevice(d.address));
+}, 5000);
 
 
 ReactDom.render(

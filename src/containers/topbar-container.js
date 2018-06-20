@@ -4,7 +4,8 @@ import Topbar from '../components/topbar.js'
 import { toggleDropdown, toggleDropdownItem, toggleDevConnect, closeDropdown, addDevice, removeDevice } from '../actions'
 
 const mapStateToProps = state => ({
-  topbar: state.navbar.topbar
+  topbar: state.ui.navbar.topbar,
+  menuItems: state.devices
 });
 
 const mapDispatchToProps = dispatch => ({

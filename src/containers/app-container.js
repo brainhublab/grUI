@@ -5,7 +5,7 @@ import App from '../components/app.js'
 
 
 const mapStateToProps = state => ({
-  sidenavToggled: state.navbar.sidenavToggled
+  sidenavToggled: state.ui.navbar.sidenavToggled
 })
 
 export default withRouter(connect(

@@ -45,7 +45,7 @@ const genOptions = (title) => ({
 });
 
 
-export default {
+const s = {
   navbar: {
     navbarToggled: false,
     sidenavToggled: false,
@@ -63,7 +63,7 @@ export default {
       datasets: [
         {
           data: genData(['#f00', '#0f0', '#00f'], 250, 3),
-            options: genOptions('Accelerometer Data'),
+          options: genOptions('Accelerometer Data'),
         },
         {
           data: genData(['#f00', '#0f0', '#00f'], 250, 3),
@@ -85,4 +85,52 @@ export default {
       ]
     },
   ],
+}
+
+export default {
+  devices: {
+    '98:D3:31:80:91:3A': {
+      name: 'GR[R]',
+      address: '98:D3:31:80:91:3A',
+      connected: false,
+    }
+  },
+  data: {
+    '98:D3:31:80:91:3A': {
+      gyro: [],
+      acc: [],
+      mag: [],
+      pos: [],
+      orientation: []
+    }
+  },
+  ui: {
+    charts: {
+      '98:D3:31:80:91:3A': {
+        raw_data: [
+          {
+            data: genData(['#f00', '#0f0', '#00f'], 250, 3),
+            options: genOptions('Accelerometer Data'),
+          },
+          {
+            data: genData(['#f00', '#0f0', '#00f'], 250, 3),
+            options: genOptions('Gyroscope Data'),
+          }
+        ],
+        trajectory: [],
+        orientation: []
+      }
+    },
+    navbar: {
+      navbarToggled: false,
+      sidenavToggled: false,
+      topbar: {
+        devmenu: {
+          menuOpen: true,
+          text: 'Available Devices',
+          openItems: ['98:D3:31:80:91:3A']
+        }
+      }
+    }
+  }
 }

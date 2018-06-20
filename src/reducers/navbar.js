@@ -20,90 +20,33 @@ const sidenavToggled = (state=false, action) => {
   }
 };
 
-const topbar = (state=[], action) => {
+const devmenu = (state=[], action) => {
+  console.log(state);
   switch(action.type) {
-    case('TOGGLE_DROPDOWN'):
-      return state.map((menu, index) => (
-        (index === action.index)
-        ? Object.assign({}, menu, {
-          menuOpen: !menu.menuOpen,
-          items: menu.items.map((item) => (
-            Object.assign({}, item, {expanded: false})
-          ))
-        })
-        : menu
-      ));
+    case('TOGGLE_DEVMENU'):
+      return Object.assign({}, state, { menuOpen: !state.menuOpen, openItems: [] });
       break;
-    case('CLOSE_DROPDOWN'):
-      return state.map((menu, index) => (
-        (index === action.index)
-        ? Object.assign({}, menu, { menuOpen: false })
-        : menu
-      ));
+    case('CLOSE_DEVMENU'):
+      return Object.assign({}, state, { menuOpen: false, openItems: [] });
       break;
-    case('ADD_DEVICE'):
-      return state.map((menu, index) => {
-        if(index === action.index) {
-          return Object.assign({}, menu, {
-            items: menu.items.findIndex((item) => item.name == action.device.name) === -1 ? menu.items.concat([action.device]) : menu.items
-          });
-        } else {
-          return menu;
-        }
-      });
+    case('TOGGLE_DEVMENU_ITEM'):
+      let newOpenItems = [];
+
+      if(state.openItems.indexOf(action.index) == -1)
+        newOpenItems = state.openItems.concat([action.index]);
+      else
+        newOpenItems = state.openItems.filter(x => x != action.index);
+
+      return Object.assign({}, state, { openItems: newOpenItems });
       break;
-    case('REMOVE_DEVICE'):
-      return state.map((menu, index) => {
-        if(index === action.index) {
-          return Object.assign({}, menu, {
-            items: menu.items.filter((item) => item.name !== action.name)
-          });
-        } else {
-          return menu;
-        }
-      });
-      break;
-    case('TOGGLE_DROPDOWN_ITEM'):
-      return state.map((menu, index) => {
-        if(index === action.menuId) {
-          return Object.assign({}, menu, {
-            items: menu.items.map((item, index) => {
-              if(index === action.index) {
-                return Object.assign({}, item, {
-                  expanded: !item.expanded
-                });
-              } else {
-                return item;
-              }
-            })
-          });
-        } else {
-          return menu;
-        }
-      });
-      break;
-    case('TOGGLE_DEV_CONNECT'):
-      return state.map((menu, index) => {
-        if(index === action.menuId) {
-          return Object.assign({}, menu, {
-            items: menu.items.map((item, index) => {
-              if(index === action.index) {
-                return Object.assign({}, item, {
-                  connected: !item.connected
-                });
-              } else {
-                return item;
-              }
-            })
-          });
-        } else {
-          return menu;
-        }
-      });
     default:
       return state;
   }
-};
+}
+
+const topbar = combineReducers({
+  devmenu
+});
 
 const NavbarReducer = combineReducers({
   navbarToggled,

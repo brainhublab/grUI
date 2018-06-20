@@ -6,7 +6,7 @@ import { toggleSidenav, toggleNavbar } from '../actions'
 
 
 const mapStateToProps = state => ({
-  navbarToggled: state.navbar.navbarToggled
+  navbarToggled: state.ui.navbar.navbarToggled
 });
 
 const mapDispatchToProps = dispatch => ({

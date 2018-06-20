@@ -42,6 +42,7 @@ module.exports = {
     historyApiFallback: {
       verbose: true,
       disableDotRule: false,
-    }
+    },
+    port: 8081
   }
 }

@@ -6,14 +6,12 @@ export const toggleNavbar = () => ({
   type: 'TOGGLE_NAVBAR'
 });
 
-export const toggleDropdown = (index) => ({
-  type: 'TOGGLE_DROPDOWN',
-  index
+export const toggleDevmenu = () => ({
+  type: 'TOGGLE_DEVMENU'
 });
 
-export const closeDropdown = (index) => ({
-  type: 'CLOSE_DROPDOWN',
-  index
+export const closeDevmenu = () => ({
+  type: 'CLOSE_DEVMENU'
 });
 
 export const addData = (chartIndex) => ({
@@ -21,26 +19,22 @@ export const addData = (chartIndex) => ({
   chartIndex,
 });
 
-export const addDevice = (index, dev) => ({
+export const addDevice = (dev) => ({
   type: 'ADD_DEVICE',
-  index,
-  device: dev
+  dev
 });
 
-export const removeDevice = (index, devName) => ({
+export const removeDevice = (id) => ({
   type: 'REMOVE_DEVICE',
-  index,
-  name: devName
+  id
 });
 
-export const toggleDropdownItem = (menuId, index) => ({
-  type: 'TOGGLE_DROPDOWN_ITEM',
-  menuId,
+export const toggleDevmenuItem = (index) => ({
+  type: 'TOGGLE_DEVMENU_ITEM',
   index
 });
 
-export const toggleDevConnect = (menuId, index) => ({
+export const toggleDevConnect = (id) => ({
   type: 'TOGGLE_DEV_CONNECT',
-  menuId,
-  index
+  id
 });

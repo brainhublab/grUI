@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import Sidenav from './sidenav.js'
 import SidenavToggle from './sidenavtoggle.js'
 import NavbarToggle from './navbar-toggle.js'
-import TopbarContainer from '../containers/topbar-container.js'
+import Topbar from './topbar.js'
 
 
 const Navbar = ({ navbarToggled, handleSidenavToggle, handleNavbarToggle }) => (
@@ -14,7 +14,7 @@ const Navbar = ({ navbarToggled, handleSidenavToggle, handleNavbarToggle }) => (
     <div className={'navbar-collapse collapse ' + (navbarToggled ? 'show' : null)} id="navbarResponsive" >
       <Sidenav />
       <SidenavToggle onClick={ handleSidenavToggle } />
-      <TopbarContainer />
+      <Topbar />
     </div>
   </nav>
 )
