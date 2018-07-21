@@ -8,7 +8,7 @@ const Acc = ({charts, devNames, handleClick}) => {
   let panels = Object.keys(charts).map((id, i) => {
     return (
       <ChartCol charts={charts[id]} devName={devNames[id]} handleClick={handleClick} key={i} />
-    );
+    )
   });
 
   return (

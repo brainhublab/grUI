@@ -1,6 +1,7 @@
-const {app, BrowserWindow} = require('electron')
+const {app, BrowserWindow, ipcMain} = require('electron')
 const path = require('path')
 const url = require('url')
+const net = require('net')
 
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -65,3 +66,28 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+var sAddress = '/tmp/grsock';
+var streamSockets = {};
+
+ipcMain.on('STREAM_DATA', (event, arg) => {
+  console.log(arg);
+  if (!streamSockets.hasOwnProperty(arg)) {
+    streamSockets[arg] = net.createConnection(sAddress, () => {
+      streamSockets[arg].on('data', (data) => {
+        var sData = data.toString();
+        console.log(sData)
+
+        if (sData.startsWith('OK')) {
+          event.sender.send('STREAM_DATA', {arg: arg, status: 'OK', data: null});
+        } else if (sData.startsWith('KO')) {
+          event.sender.send('STREAM_DATA', {arg: arg, status: 'KO', data: sData});
+        } else {
+          event.sender.send('STREAM_DATA', {arg: arg, status: 'OK', data: sData});
+        }
+      });
+
+      streamSockets[arg].write('STREAM_DATA ' + arg);
+    });
+  }
+});

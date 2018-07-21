@@ -14,9 +14,10 @@ export const closeDevmenu = () => ({
   type: 'CLOSE_DEVMENU'
 });
 
-export const addData = (chartIndex) => ({
+export const addData = (chartIndex, data) => ({
   type: 'ADD_DATA',
   chartIndex,
+  data,
 });
 
 export const addDevice = (dev) => ({
@@ -29,12 +30,7 @@ export const removeDevice = (id) => ({
   id
 });
 
-export const toggleDevmenuItem = (index) => ({
-  type: 'TOGGLE_DEVMENU_ITEM',
+export const clickDevmenuItem = (index) => ({
+  type: 'CLICK_DEVMENU_ITEM',
   index
-});
-
-export const toggleDevConnect = (id) => ({
-  type: 'TOGGLE_DEV_CONNECT',
-  id
 });

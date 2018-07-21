@@ -20,8 +20,8 @@
     "react-dom": "^16.2.0",
     "react-hot-loader": "^4.0.0",
     "redux": "^3.7.2",
-    "webpack": "^4.1.1",
-    "webpack-dev-server": "^3.1.1"
+    "webpack": "^4.16.1",
+    "webpack-dev-server": "^3.1.4"
   },
   "devDependencies": {
     "babel-preset-env": "^1.6.1",

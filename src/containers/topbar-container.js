@@ -9,11 +9,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  handleDropdownToggle: (index) => dispatch(toggleDropdown(index)),
-  handleDropdownItemToggle: (menuId, index) => dispatch(toggleDropdownItem(menuId, index)),
-  handleBlur: (index) => dispatch(closeDropdown(index)),
-  handleAutoConnect: (menuId, index) => dispatch(toggleAutoConnect(menuId, index)),
-  handleConnect: (menuId, index) => dispatch(toggleDevConnect(menuId, index)),
 });
 
 export default connect(

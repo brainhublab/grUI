@@ -1,3 +1,4 @@
+
 import { connect } from 'react-redux'
 
 import Acc from '../components/acc.js'
@@ -5,9 +6,10 @@ import { addData } from '../actions'
 
 const getpagecharts = (state) => {
   let charts = {}
-  let currentIMU = state.ui.navbar.topbar.devmenu.currentIMU
 
-  charts[currentIMU] = state.ui.charts[currentIMU]['bigCharts']
+  for(var i in state.ui.charts) {
+    charts[i] = state.ui.charts[i]['smallCharts']
+  }
 
   return charts
 }

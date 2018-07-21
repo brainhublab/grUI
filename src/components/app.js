@@ -6,6 +6,7 @@ import Panel from './panel.js'
 
 import Home from '../components/home.js'
 import AccContainer from '../containers/acc-container.js'
+import ImusContainer from '../containers/imus-container.js'
 
 
 const App = (state) => (
@@ -16,8 +17,7 @@ const App = (state) => (
         <Switch>
           <Route exact path="/" component={Home} />
           <Route exact path="/raw_data" component={AccContainer} />
-          <Route exact path="/trajectory" render={() => (<Panel title="Trajectory Charts"><p>pos</p></Panel>)} />
-          <Route exact path="/orientation" render={() => (<Panel title="Orientation Graphic"><p>orient</p></Panel>)} />
+          <Route exact path="/trajectory" component={ImusContainer} />
         </Switch>
       </div>
     </div>

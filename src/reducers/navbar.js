@@ -29,15 +29,8 @@ const devmenu = (state=[], action) => {
     case('CLOSE_DEVMENU'):
       return Object.assign({}, state, { menuOpen: false, openItems: [] });
       break;
-    case('TOGGLE_DEVMENU_ITEM'):
-      let newOpenItems = [];
-
-      if(state.openItems.indexOf(action.index) == -1)
-        newOpenItems = state.openItems.concat([action.index]);
-      else
-        newOpenItems = state.openItems.filter(x => x != action.index);
-
-      return Object.assign({}, state, { openItems: newOpenItems });
+    case('CLICK_DEVMENU_ITEM'):
+      return Object.assign({}, state, { currentIMU: action.index });
       break;
     default:
       return state;

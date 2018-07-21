@@ -1,51 +1,84 @@
 import { combineReducers } from 'redux'
 
-const getRandomInt = (max) => (Math.floor(Math.random() * Math.floor(max)));
+const parseData = (data) => {
+  let out = {}
+  let parts = data.split(' ')
 
-const addData = (data, i, max_len) => {
-  let newData = data.concat([getRandomInt(101) + i * 10]);
+  out['acc'] = parts[1].split(',').map((v) => parseFloat(v))
+  out['gyro'] = parts[2].split(',').map((v) => parseFloat(v))
+  out['mag'] = parts[3].split(',').map((v) => parseFloat(v))
 
-  if (newData.length > max_len) {
-    return newData.slice(1);
-  }
+  return out
+}
 
-  return newData
-};
-
-const DataReducer = (state={}, action) => {
+const ChartReducer = (state={}, action) => {
   switch(action.type) {
     case('ADD_DATA'):
+      let data = parseData(action.data);
       return Object.assign({}, state, {
-        labels: state.labels,
-        datasets: state.datasets.map((v, i) => (
-          Object.assign({}, v, {
-            data: addData(v.data, i, state.pointsNumber)
+        bigCharts: state.bigCharts.map((val, index) => {
+          if (index == 0) {
+            return Object.assign({}, val, {
+              data: Object.assign({}, val.data, {
+                datasets: val.data.datasets.map((v, i) => {
+                  let newData = v.data.concat(data.acc[i])
+                  newData = newData.slice(1)
+                  return Object.assign({}, v, {
+                    data: newData
+                  })
+                })
+              }),
+              options: val.options
+            })
+          } else if (index == 1) {
+            return Object.assign({}, val, {
+              data: Object.assign({}, val.data, {
+                datasets: val.data.datasets.map((v, i) => {
+                  let newData = v.data.concat(data.gyro[i])
+                  newData = newData.slice(1)
+                  return Object.assign({}, v, {
+                    data: newData
+                  })
+                })
+              })
+            })
+          }
+        }),
+        smallCharts: state.smallCharts.map((val, index) => {
+          return Object.assign({}, val, {
+            data: Object.assign({}, val.data, {
+              datasets: val.data.datasets.map((v, i) => {
+                let newData = []
+                if (i < 3) {
+                  newData = v.data.concat(data.acc[i])
+                } else {
+                  newData = v.data.concat(data.gyro[i - 3])
+                }
+                newData = newData.slice(1)
+                return Object.assign({}, v, {
+                  data: newData
+                })
+              })
+            })
           })
-        ))
-      });
-      break;
-    default:
-      return state;
+        })
+      })
   }
-};
-
-const OptionsReducer = (state={}, action) => (state);
-
-const ChartReducer = combineReducers({
-  data: DataReducer,
-  options: OptionsReducer
-});
+}
 
 const ChartsReducer = (state=[], action) => {
   switch(action.type) {
     case('ADD_DATA'):
-      return state.map((chart, index) => {
-        if(index == action.chartIndex) {
-          return ChartReducer(chart, action);
-        } else {
-          return chart;
-        }
-      });
+      let updatedChart = {}
+      let key = action.chartIndex
+
+      if (!state.hasOwnProperty(key)) {
+        return state
+      }
+
+      updatedChart[key] = ChartReducer(state[key], action)
+
+      return Object.assign({}, state, updatedChart);
       break;
     default:
       return state;

@@ -18,7 +18,7 @@ const genDataset = (label, color, pointsNumber) => ({
   pointHoverBorderWidth: 0,
   pointRadius: 0,
   pointHitRadius: 10,
-  data: Array(pointsNumber).fill(null),
+  data: Array(pointsNumber).fill(Math.random()),
 });
 
 const genData = (colors, pointsNumber, datasetsNumber) => ({
@@ -31,8 +31,7 @@ const genOptions = (title) => ({
   animation: {
     duration: 0,
     easing: 'linear'
-  },
-  responsive: true,
+  }, responsive: true,
   maintainAspectRatio: false,
   title: {
     display: false,
@@ -43,6 +42,25 @@ const genOptions = (title) => ({
     display: false
   }
 });
+
+const genCharts = () => ({
+  'bigCharts': [
+    {
+      data: genData(['#f00', '#0f0', '#00f'], 250, 3),
+      options: genOptions('Accelerometer Data'),
+    },
+    {
+      data: genData(['#f00', '#0f0', '#00f'], 250, 3),
+      options: genOptions('Gyroscope Data'),
+    }
+  ],
+  'smallCharts': [
+    {
+      data: genData(['#f00', '#0f0', '#00f', '#ff0', '#0ff', '#f0f'], 250, 6),
+      options: genOptions('Acc + Gyro data'),
+    }
+  ]
+})
 
 
 const s = {
@@ -89,37 +107,21 @@ const s = {
 
 export default {
   devices: {
-    '98:D3:31:80:91:3A': {
-      name: 'GR[R]',
-      address: '98:D3:31:80:91:3A',
-      connected: false,
-    }
-  },
-  data: {
-    '98:D3:31:80:91:3A': {
-      gyro: [],
-      acc: [],
-      mag: [],
-      pos: [],
-      orientation: []
-    }
+    palm: 'Palm',
+    thumb: 'Thumb',
+    index: 'Index',
+    middle: 'Middle',
+    ring: 'Ring',
+    pinky: 'Pinky'
   },
   ui: {
     charts: {
-      '98:D3:31:80:91:3A': {
-        raw_data: [
-          {
-            data: genData(['#f00', '#0f0', '#00f'], 250, 3),
-            options: genOptions('Accelerometer Data'),
-          },
-          {
-            data: genData(['#f00', '#0f0', '#00f'], 250, 3),
-            options: genOptions('Gyroscope Data'),
-          }
-        ],
-        trajectory: [],
-        orientation: []
-      }
+      palm: genCharts(),
+      thumb: genCharts(),
+      index: genCharts(),
+      middle: genCharts(),
+      ring: genCharts(),
+      pinky: genCharts(),
     },
     navbar: {
       navbarToggled: false,
@@ -127,8 +129,8 @@ export default {
       topbar: {
         devmenu: {
           menuOpen: true,
-          text: 'Available Devices',
-          openItems: ['98:D3:31:80:91:3A']
+          text: 'Available IMUs',
+          currentIMU: 'palm'
         }
       }
     }

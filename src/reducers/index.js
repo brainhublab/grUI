@@ -16,7 +16,6 @@ const ui = combineReducers({
 
 const reducer = combineReducers({
   devices: DevicesReducer,
-  data,
   ui
 });
 
