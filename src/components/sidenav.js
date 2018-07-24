@@ -12,8 +12,8 @@ const NavItem = (text, icon, path) => (
 
 const Sidenav = () => (
   <ul className="navbar-nav navbar-sidenav" id="exampleAccordion">
-    {NavItem('Single IMU', 'fa-microchip', '/raw_data')}
-    {NavItem('All IMUs', 'fa-bullseye', '/trajectory')}
+    {NavItem('Single IMU', 'fa-microchip', '/imu')}
+    {NavItem('All IMUs', 'fa-bullseye', '/imus')}
   </ul>
 )
 

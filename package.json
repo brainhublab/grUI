@@ -5,9 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"No tests available\"",
-    "dev:webpack": "webpack-dev-server --mode development",
+    "dev:webpack": "webpack-dev-server --config webpack.dev.js",
     "dev:renderer": "electron src/main.js",
-    "dev": "npm run dev:webpack && npm run dev:renderer"
+    "build": "webpack --config webpack.prod.js",
+    "start": "env NODE_ENV=prod electron src/main.js"
   },
   "author": "",
   "license": "MIT",
@@ -28,6 +29,7 @@
     "babel-preset-react": "^6.24.1",
     "bootstrap": "^4.0.0",
     "chart.js": "^2.7.2",
+    "clean-webpack-plugin": "^0.1.19",
     "css-loader": "^0.28.10",
     "electron-devtools-installer": "^2.2.3",
     "file-loader": "^1.1.11",
@@ -39,6 +41,7 @@
     "react-router-dom": "^4.2.2",
     "style-loader": "^0.20.3",
     "url-loader": "^1.0.1",
-    "webpack-cli": "^2.0.11"
+    "webpack-cli": "^2.0.11",
+    "webpack-merge": "^4.1.3"
   }
 }

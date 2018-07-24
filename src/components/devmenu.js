@@ -7,7 +7,6 @@ class Dropdown extends React.Component {
   }
 
   renderMenuItems(items, handleDropdownItemClick) {
-    console.log(items)
     let itemIds = Object.keys(items).sort();
 
     return itemIds.map((id, index) => {

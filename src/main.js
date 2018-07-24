@@ -24,11 +24,20 @@ function createWindow () {
       .catch((err) => console.log('An error occurred: ', err));
 
   // and load the index.html of the app.
-  win.loadURL(url.format({
-    pathname: 'localhost:8081',
-    protocol: 'http:',
-    slashes: true
-  }))
+  if (process.env.NODE_ENV === 'prod') {
+    const p = path.join(__dirname, '..', 'dist', 'index.html')
+    win.loadURL(url.format({
+      pathname: p,
+      protocol: 'file:',
+      slashes: true
+    }))
+  } else {
+    win.loadURL(url.format({
+      pathname: 'localhost:8081',
+      protocol: 'http:',
+      slashes: true
+    }))
+  }
 
   // // Open the DevTools.
   // win.webContents.openDevTools()
@@ -71,12 +80,10 @@ var sAddress = '/tmp/grsock';
 var streamSockets = {};
 
 ipcMain.on('STREAM_DATA', (event, arg) => {
-  console.log(arg);
   if (!streamSockets.hasOwnProperty(arg)) {
     streamSockets[arg] = net.createConnection(sAddress, () => {
       streamSockets[arg].on('data', (data) => {
         var sData = data.toString();
-        console.log(sData)
 
         if (sData.startsWith('OK')) {
           event.sender.send('STREAM_DATA', {arg: arg, status: 'OK', data: null});
@@ -89,5 +96,9 @@ ipcMain.on('STREAM_DATA', (event, arg) => {
 
       streamSockets[arg].write('STREAM_DATA ' + arg);
     });
+    streamSockets[arg].on('error', (err) => {
+      console.log(err);
+      delete streamSockets[arg]
+    })
   }
 });

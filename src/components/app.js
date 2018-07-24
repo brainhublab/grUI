@@ -1,5 +1,5 @@
 import React from 'react'
-import { Route, Link, Switch } from 'react-router-dom'
+import { Route, Link, Switch, Redirect } from 'react-router-dom'
 
 import NavbarContainer from '../containers/navbar-container.js'
 import Panel from './panel.js'
@@ -15,9 +15,9 @@ const App = (state) => (
     <div className="content-wrapper">
       <div className="container-fluid">
         <Switch>
-          <Route exact path="/" component={Home} />
-          <Route exact path="/raw_data" component={AccContainer} />
-          <Route exact path="/trajectory" component={ImusContainer} />
+          <Route exact path="/" render={() => (<Redirect to="/imu" />)} />
+          <Route exact path="/imu" component={AccContainer} />
+          <Route exact path="/imus" component={ImusContainer} />
         </Switch>
       </div>
     </div>

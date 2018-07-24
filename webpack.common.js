@@ -34,15 +34,8 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'JS test page',
+      title: 'GR',
       template: './src/index.html'
     })
-  ],
-  devServer: {
-    historyApiFallback: {
-      verbose: true,
-      disableDotRule: false,
-    },
-    port: 8081
-  }
+  ]
 }

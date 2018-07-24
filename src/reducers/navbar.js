@@ -21,7 +21,6 @@ const sidenavToggled = (state=false, action) => {
 };
 
 const devmenu = (state=[], action) => {
-  console.log(state);
   switch(action.type) {
     case('TOGGLE_DEVMENU'):
       return Object.assign({}, state, { menuOpen: !state.menuOpen, openItems: [] });

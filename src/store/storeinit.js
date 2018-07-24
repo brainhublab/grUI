@@ -128,7 +128,7 @@ export default {
       sidenavToggled: false,
       topbar: {
         devmenu: {
-          menuOpen: true,
+          menuOpen: false,
           text: 'Available IMUs',
           currentIMU: 'palm'
         }
