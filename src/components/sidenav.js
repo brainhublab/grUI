@@ -14,6 +14,7 @@ const Sidenav = () => (
   <ul className="navbar-nav navbar-sidenav" id="exampleAccordion">
     {NavItem('Single IMU', 'fa-microchip', '/imu')}
     {NavItem('All IMUs', 'fa-bullseye', '/imus')}
+    {NavItem('Rotations', 'fa-bullseye', '/rotations')}
   </ul>
 )
 

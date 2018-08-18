@@ -66,7 +66,7 @@ const ChartReducer = (state={}, action) => {
   }
 }
 
-const ChartsReducer = (state=[], action) => {
+const RawChartsReducer = (state={}, action) => {
   switch(action.type) {
     case('ADD_DATA'):
       let updatedChart = {}
@@ -84,5 +84,29 @@ const ChartsReducer = (state=[], action) => {
       return state;
   }
 };
+
+const RotationChartsReducer = (state={}, action) => {
+  switch(action.type) {
+    case('ADD_ROTATIONS_DATA'):
+      let parts = action.data.split(' ')
+      return Object.assign({}, state, {
+        data: Object.assign({}, state.data, {
+          datasets: state.data.datasets.map((v, i) => {
+            let newData = v.data.concat(parts[i]);
+            newData = newData.slice(1)
+            return Object.assign({}, v, {data: newData})
+          })
+        })
+      })
+      break
+    default:
+      return state
+  }
+}
+
+const ChartsReducer = combineReducers({
+  raw: RawChartsReducer,
+  rotations: RotationChartsReducer
+})
 
 export default ChartsReducer;

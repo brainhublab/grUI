@@ -20,6 +20,11 @@ export const addData = (chartIndex, data) => ({
   data,
 });
 
+export const addRotData = (data) => ({
+  type: 'ADD_ROTATIONS_DATA',
+  data
+});
+
 export const addDevice = (dev) => ({
   type: 'ADD_DEVICE',
   dev

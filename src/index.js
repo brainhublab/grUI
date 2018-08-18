@@ -13,7 +13,7 @@ import Style from './styles/style.css'
 import reducer from './reducers'
 import initialState from './store/storeinit.js'
 import AppContainer from './containers/app-container.js'
-import { addData, addDevice, removeDevice } from './actions'
+import { addData, addRotData, addDevice, removeDevice } from './actions'
 
 
 const store = createStore(
@@ -28,12 +28,19 @@ ipcRenderer.on('STREAM_DATA', (event, data) => {
   }
 });
 
+ipcRenderer.on('STREAM_ROTATIONS_DATA', (event, data) => {
+  if (data.status == 'OK' && data.data) {
+    store.dispatch(addRotData(data.data));
+  }
+});
+
 ipcRenderer.send('STREAM_DATA', 'palm')
 ipcRenderer.send('STREAM_DATA', 'thumb')
 ipcRenderer.send('STREAM_DATA', 'index')
 ipcRenderer.send('STREAM_DATA', 'middle')
 ipcRenderer.send('STREAM_DATA', 'ring')
 ipcRenderer.send('STREAM_DATA', 'pinky')
+ipcRenderer.send('STREAM_ROTATIONS_DATA')
 
 ReactDom.render(
   <Provider store={store}>

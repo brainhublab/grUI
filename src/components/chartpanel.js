@@ -5,7 +5,7 @@ import Panel from './panel.js'
 
 const ChartPanel = ({chart, devName}) => (
   <Panel title={devName + ' - ' + chart.options.title.text}>
-    <LineChart data={chart.data} options={chart.options} />
+    <LineChart data={chart.data} options={chart.options} redraw={false} />
   </Panel>
 )
 

@@ -7,7 +7,7 @@ const getpagecharts = (state) => {
   let charts = {}
   let currentIMU = state.ui.navbar.topbar.devmenu.currentIMU
 
-  charts[currentIMU] = state.ui.charts[currentIMU]['bigCharts']
+  charts[currentIMU] = state.ui.charts['raw'][currentIMU]['bigCharts']
 
   return charts
 }
@@ -24,7 +24,8 @@ const getdevnames = (state) => {
 
 const mapStateToProps = state => ({
   charts: getpagecharts(state),
-  devNames: getdevnames(state)
+  devNames: getdevnames(state),
+  colClass: 'col col-sm-12'
 });
 
 const mapDispatchToProps = dispatch => ({

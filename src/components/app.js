@@ -7,6 +7,7 @@ import Panel from './panel.js'
 import Home from '../components/home.js'
 import AccContainer from '../containers/acc-container.js'
 import ImusContainer from '../containers/imus-container.js'
+import RotationsContainer from '../containers/rotations-container.js'
 
 
 const App = (state) => (
@@ -18,6 +19,7 @@ const App = (state) => (
           <Route exact path="/" render={() => (<Redirect to="/imu" />)} />
           <Route exact path="/imu" component={AccContainer} />
           <Route exact path="/imus" component={ImusContainer} />
+          <Route exact path="/rotations" component={RotationsContainer} />
         </Switch>
       </div>
     </div>

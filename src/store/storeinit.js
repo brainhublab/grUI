@@ -1,3 +1,6 @@
+const CHART_SIZE_SMALL = 100;
+const CHART_SIZE_NORMAL = 200;
+
 const genDataset = (label, color, pointsNumber) => ({
   label: label,
   fill: false,
@@ -7,7 +10,7 @@ const genDataset = (label, color, pointsNumber) => ({
   borderCapStyle: 'butt',
   borderDash: [],
   borderDashOffset: 0.0,
-  borderWidth: 1,
+  borderWidth: 2,
   borderJoinStyle: 'miter',
   pointBorderColor: 'rgba(75,192,192,1)',
   pointBackgroundColor: '#fff',
@@ -43,67 +46,20 @@ const genOptions = (title) => ({
   }
 });
 
-const genCharts = () => ({
-  'bigCharts': [
-    {
-      data: genData(['#f00', '#0f0', '#00f'], 250, 3),
-      options: genOptions('Accelerometer Data'),
-    },
-    {
-      data: genData(['#f00', '#0f0', '#00f'], 250, 3),
-      options: genOptions('Gyroscope Data'),
-    }
-  ],
-  'smallCharts': [
-    {
-      data: genData(['#f00', '#0f0', '#00f', '#ff0', '#0ff', '#f0f'], 250, 6),
-      options: genOptions('Acc + Gyro data'),
-    }
-  ]
+const genChart = (name, colors, pointsNumber, datasetsNumber) => ({
+  data: genData(colors, pointsNumber, datasetsNumber),
+  options: genOptions(name),
 })
 
-
-const s = {
-  navbar: {
-    navbarToggled: false,
-    sidenavToggled: false,
-    topbar: [
-      {
-        menuOpen: true,
-        text: 'Available Devices',
-        items: []
-      },
-    ],
-  },
-  charts: [
-    {
-      devName: 'GR[L]',
-      datasets: [
-        {
-          data: genData(['#f00', '#0f0', '#00f'], 250, 3),
-          options: genOptions('Accelerometer Data'),
-        },
-        {
-          data: genData(['#f00', '#0f0', '#00f'], 250, 3),
-          options: genOptions('Gyroscope Data'),
-        }
-      ]
-    },
-    {
-      devName: 'GR[R]',
-      datasets: [
-        {
-          data: genData(['#f00', '#0f0', '#00f'], 250, 3),
-          options: genOptions('Accelerometer Data'),
-        },
-        {
-          data: genData(['#f00', '#0f0', '#00f'], 250, 3),
-          options: genOptions('Gyroscope Data'),
-        }
-      ]
-    },
+const genCharts = () => ({
+  'bigCharts': [
+    genChart('Accelerometer Data', ['#f00', '#0f0', '#00f'], CHART_SIZE_NORMAL, 3),
+    genChart('Gyroscope Data', ['#f00', '#0f0', '#00f'], CHART_SIZE_NORMAL, 3),
   ],
-}
+  'smallCharts': [
+    genChart('Acc + Gyro data', ['#f00', '#0f0', '#00f', '#ff0', '#0ff', '#f0f'], CHART_SIZE_SMALL, 6)
+  ]
+})
 
 export default {
   devices: {
@@ -114,14 +70,32 @@ export default {
     ring: 'Ring',
     pinky: 'Pinky'
   },
+  //   data: [
+  //     {
+  //       key: 1,
+  //       data: []
+  //     }
+  //   ],
+  //   charts: [
+  //     {
+  //       key: 1,
+  //       data: {},
+  //       options: {}
+  //     }
+  //   ],
+  //   fstPageCharts: [1],
+  //   sndPageCharts: [1],
   ui: {
     charts: {
-      palm: genCharts(),
-      thumb: genCharts(),
-      index: genCharts(),
-      middle: genCharts(),
-      ring: genCharts(),
-      pinky: genCharts(),
+      raw: {
+        palm: genCharts(),
+        thumb: genCharts(),
+        index: genCharts(),
+        middle: genCharts(),
+        ring: genCharts(),
+        pinky: genCharts(),
+      },
+      rotations: genChart('Rotations data', ['#f00', '#0f0', '#00f', '#ff0', '#0ff', '#f0f', '#8ff', '#f8f'], CHART_SIZE_NORMAL, 8)
     },
     navbar: {
       navbarToggled: false,

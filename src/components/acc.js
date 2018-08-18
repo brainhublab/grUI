@@ -4,10 +4,10 @@ import { Line as LineChart } from 'react-chartjs-2'
 import ChartCol from './chartcol.js'
 
 
-const Acc = ({charts, devNames, handleClick}) => {
+const Acc = ({charts, devNames, colClass, handleClick}) => {
   let panels = Object.keys(charts).map((id, i) => {
     return (
-      <ChartCol charts={charts[id]} devName={devNames[id]} handleClick={handleClick} key={i} />
+      <ChartCol charts={charts[id]} devName={devNames[id]} colClass={colClass} handleClick={handleClick} key={i} />
     )
   });
 
