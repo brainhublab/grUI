@@ -83,54 +83,70 @@ var streamSockets = {
 }
 
 ipcMain.on('STREAM_DATA', (event, arg) => {
-  if (!streamSockets.hasOwnProperty(arg)) {
-    streamSockets[arg] = net.createConnection(sAddress, () => {
-      streamSockets[arg].on('data', (data) => {
-        var sData = data.toString()
-
-        if (sData.startsWith('OK')) {
-          event.sender.send('STREAM_DATA', {arg: arg, status: 'OK', data: null})
-        } else if (sData.startsWith('KO')) {
-          event.sender.send('STREAM_DATA', {arg: arg, status: 'KO', data: sData})
-        } else {
-          event.sender.send('STREAM_DATA', {arg: arg, status: 'OK', data: sData})
-        }
-      })
-
-      streamSockets[arg].write('STREAM_DATA ' + arg)
-    })
-
-    streamSockets[arg].on('error', (err) => {
-      console.log(err)
-      delete streamSockets[arg]
-    })
+  if (streamSockets.hasOwnProperty(arg) && streamSockets.raw[arg] instanceof net.Socket) {
+    streamSockets.raw[arg].destroy()
+    streamSockets.raw[arg] = null
   }
+
+  streamSockets.raw[arg] = net.createConnection(sAddress, () => {
+    streamSockets.raw[arg].on('data', (data) => {
+      var sData = data.toString()
+
+      if (sData.startsWith('OK')) {
+        event.sender.send('STREAM_DATA', {arg: arg, status: 'OK', data: null})
+      } else if (sData.startsWith('KO')) {
+        event.sender.send('STREAM_DATA', {arg: arg, status: 'KO', data: sData})
+      } else {
+        event.sender.send('STREAM_DATA', {arg: arg, status: 'OK', data: sData})
+      }
+    })
+
+    streamSockets.raw[arg].write('STREAM_DATA ' + arg)
+  })
+
+  streamSockets.raw[arg].on('error', (err) => {
+    console.log(err)
+    streamSockets.raw[arg] = null
+  })
+
+  streamSockets.raw[arg].on('close', () => {
+    console.log('closed')
+    streamSockets.raw[arg] = null
+  })
 })
 
 ipcMain.on('STREAM_ROTATIONS_DATA', (event, arg) => {
-  if (streamSockets.rotations === null) {
-    streamSockets.rotations = net.createConnection(sAddress, () => {
-      streamSockets.rotations.on('data', (data) => {
-        var sData = data.toString()
-
-        console.log(sData);
-
-        if (sData.startsWith('OK')) {
-          event.sender.send('STREAM_ROTATIONS_DATA', {status: 'OK', data: null})
-        } else if (sData.startsWith('KO')) {
-          event.sender.send('STREAM_ROTATIONS_DATA', {status: 'KO', data: sData})
-        } else {
-          event.sender.send('STREAM_ROTATIONS_DATA', {status: 'OK', data: sData})
-        }
-      })
-
-      streamSockets.rotations.write('STREAM_ROTATIONS_DATA')
-    })
-
-    streamSockets.rotations.on('error', (err) => {
-      console.log('stream rotations')
-      console.log(err)
-      delete streamSockets.rotations
-    })
+  if (streamSockets.rotations !== null && streamSockets.rotations instanceof net.Socket) {
+    streamSockets.rotations.destroy()
+    streamSockets.rotations = null
   }
+
+  streamSockets.rotations = net.createConnection(sAddress, () => {
+    streamSockets.rotations.on('data', (data) => {
+      var sData = data.toString()
+
+      console.log(sData);
+
+      if (sData.startsWith('OK')) {
+        event.sender.send('STREAM_ROTATIONS_DATA', {status: 'OK', data: null})
+      } else if (sData.startsWith('KO')) {
+        event.sender.send('STREAM_ROTATIONS_DATA', {status: 'KO', data: sData})
+      } else {
+        event.sender.send('STREAM_ROTATIONS_DATA', {status: 'OK', data: sData})
+      }
+    })
+
+    streamSockets.rotations.write('STREAM_ROTATIONS_DATA')
+  })
+
+  streamSockets.rotations.on('error', (err) => {
+    console.log('stream rotations')
+    console.log(err)
+    streamSockets.rotations = null
+  })
+
+  streamSockets.rotations.on('close', () => {
+    console.log('closed')
+    streamSockets.rotations = null
+  })
 })
