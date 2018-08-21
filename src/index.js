@@ -25,12 +25,24 @@ const store = createStore(
 ipcRenderer.on('STREAM_DATA', (event, data) => {
   if (data.status == 'OK' && data.data) {
     store.dispatch(addData(data.arg, data.data));
+  } else if (data.status == 'KO') {
+    if (data.data instanceof Object && data.data.hasOwnProperty('errno')) {
+      alert('[ERROR] ' + data.arg + ': ' + data.data.errno)
+    } else {
+      alert('[ERROR] ' + data.arg + ': ' + data.data)
+    }
   }
 });
 
 ipcRenderer.on('STREAM_ROTATIONS_DATA', (event, data) => {
   if (data.status == 'OK' && data.data) {
     store.dispatch(addRotData(data.data));
+  } else if (data.status == 'KO') {
+    if (data.data instanceof Object && data.data.hasOwnProperty('errno')) {
+      alert('[ERROR] rotations: ' + data.data.errno)
+    } else {
+      alert('[ERROR] rotations: ' + data.data)
+    }
   }
 });
 

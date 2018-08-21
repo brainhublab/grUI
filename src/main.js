@@ -83,7 +83,7 @@ var streamSockets = {
 }
 
 ipcMain.on('STREAM_DATA', (event, arg) => {
-  if (streamSockets.hasOwnProperty(arg) && streamSockets.raw[arg] instanceof net.Socket) {
+  if (streamSockets.raw.hasOwnProperty(arg) && streamSockets.raw[arg] instanceof net.Socket) {
     streamSockets.raw[arg].destroy()
     streamSockets.raw[arg] = null
   }
@@ -105,18 +105,20 @@ ipcMain.on('STREAM_DATA', (event, arg) => {
   })
 
   streamSockets.raw[arg].on('error', (err) => {
-    console.log(err)
+    event.sender.send('STREAM_DATA', {arg: arg, status: 'KO', data: err})
     streamSockets.raw[arg] = null
   })
 
-  streamSockets.raw[arg].on('close', () => {
-    console.log('closed')
+  streamSockets.raw[arg].on('close', (hadError) => {
+    if (!hadError) {
+      event.sender.send('STREAM_DATA', {arg: arg, status: 'KO', data: 'Connection closed'})
+    }
     streamSockets.raw[arg] = null
   })
 })
 
 ipcMain.on('STREAM_ROTATIONS_DATA', (event, arg) => {
-  if (streamSockets.rotations !== null && streamSockets.rotations instanceof net.Socket) {
+  if (streamSockets.rotations instanceof net.Socket) {
     streamSockets.rotations.destroy()
     streamSockets.rotations = null
   }
@@ -140,13 +142,14 @@ ipcMain.on('STREAM_ROTATIONS_DATA', (event, arg) => {
   })
 
   streamSockets.rotations.on('error', (err) => {
-    console.log('stream rotations')
-    console.log(err)
+    event.sender.send('STREAM_ROTATIONS_DATA', {status: 'KO', data: err})
     streamSockets.rotations = null
   })
 
-  streamSockets.rotations.on('close', () => {
-    console.log('closed')
+  streamSockets.rotations.on('close', (hadError) => {
+    if (!hadError) {
+      event.sender.send('STREAM_ROTATIONS_DATA', {status: 'KO', data: 'Connection closed'})
+    }
     streamSockets.rotations = null
   })
 })
