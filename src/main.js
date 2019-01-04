@@ -91,6 +91,7 @@ ipcMain.on('STREAM_DATA', (event, arg) => {
   streamSockets.raw[arg] = net.createConnection(sAddress, () => {
     streamSockets.raw[arg].on('data', (data) => {
       var sData = data.toString()
+      console.log('data: ', sData)
 
       if (sData.startsWith('OK')) {
         event.sender.send('STREAM_DATA', {arg: arg, status: 'OK', data: null})
@@ -105,6 +106,7 @@ ipcMain.on('STREAM_DATA', (event, arg) => {
   })
 
   streamSockets.raw[arg].on('error', (err) => {
+    console.log('error: ', err)
     event.sender.send('STREAM_DATA', {arg: arg, status: 'KO', data: err})
     streamSockets.raw[arg] = null
   })

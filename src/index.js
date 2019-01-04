@@ -34,6 +34,9 @@ ipcRenderer.on('STREAM_DATA', (event, data) => {
     } else if (data.status == 'KO') {
         if (data.data instanceof Object && data.data.hasOwnProperty('errno')) {
             alert('[ERROR] ' + data.arg + ': ' + data.data.errno);
+            if (data.data.errno === 'EAGAIN') {
+                ipcRenderer.send('STREAM_DATA', data.arg);
+            }
         } else {
             alert('[ERROR] ' + data.arg + ': ' + data.data);
         }
@@ -46,6 +49,9 @@ ipcRenderer.on('STREAM_ROTATIONS_DATA', (event, data) => {
     } else if (data.status == 'KO') {
         if (data.data instanceof Object && data.data.hasOwnProperty('errno')) {
             alert('[ERROR] rotations: ' + data.data.errno);
+            if (data.data.errno === 'EAGAIN') {
+                ipcRenderer.send('STREAM_ROTATIONS_DATA');
+            }
         } else {
             alert('[ERROR] rotations: ' + data.data);
         }
