@@ -1,21 +1,22 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom'
+import { NavLink } from 'react-router-dom';
 
 const NavItem = (text, icon, path) => (
-  <li className="nav-item" title="">
-    <NavLink to={path} className="nav-link" activeClassName="nav-link-active">
-      <i className={'fa fa-fw ' + icon}></i>
-      <span className="nav-link-text">{text}</span>
-    </NavLink>
-  </li>
-)
+    <li className="nav-item" title="">
+        <NavLink to={path} className="nav-link" activeClassName="nav-link-active">
+            <i className={'fa fa-fw ' + icon}></i>
+            <span className="nav-link-text">{text}</span>
+        </NavLink>
+    </li>
+);
 
 const Sidenav = () => (
-  <ul className="navbar-nav navbar-sidenav" id="exampleAccordion">
-    {NavItem('Single IMU', 'fa-microchip', '/imu')}
-    {NavItem('All IMUs', 'fa-bullseye', '/imus')}
-    {NavItem('Rotations', 'fa-bullseye', '/rotations')}
-  </ul>
-)
+    <ul className="navbar-nav navbar-sidenav" id="exampleAccordion">
+        {NavItem('Single IMU', 'fa-microchip', '/imu')}
+        {NavItem('All IMUs', 'fa-bullseye', '/imus')}
+        {NavItem('Rotations', 'fa-bullseye', '/rotations')}
+        {NavItem('Hands', 'fa-bullseye', '/hands')}
+    </ul>
+);
 
-export default Sidenav
+export default Sidenav;
