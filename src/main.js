@@ -96,15 +96,17 @@ ipcMain.on('STREAM_DATA', (event, arg) => {
     if (streamCache.raw[arg].hasOwnProperty('timer')) {
       clearInterval(streamCache.raw[arg].timer);
     }
-
-    streamCache.raw[arg].cache = [];
-    streamCache.raw[arg].timer = setInterval(() => {
-      if (streamCache.raw[arg].cache.length != 0) {
-        event.sender.send('STREAM_DATA', {arg: arg, status: 'OK', data: streamCache.raw[arg].cache});
-        streamCache.raw[arg].cache = [];
-      }
-    }, 100);
+  } else {
+    streamCache.raw[arg] = {}
   }
+
+  streamCache.raw[arg].cache = [];
+  streamCache.raw[arg].timer = setInterval(() => {
+    if (streamCache.raw[arg].cache.length != 0) {
+      event.sender.send('STREAM_DATA', {arg: arg, status: 'OK', data: streamCache.raw[arg].cache});
+      streamCache.raw[arg].cache = [];
+    }
+  }, 100);
 
   streamSockets.raw[arg] = net.createConnection(sAddress, () => {
     streamSockets.raw[arg].on('data', (data) => {
