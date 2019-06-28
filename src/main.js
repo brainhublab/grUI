@@ -80,30 +80,64 @@ var sAddress = '/tmp/grsock'
 var streamSockets = {
   'raw': {},
   'rotations': null
-}
+};
+var streamCache = {
+  'raw': {},
+};
 
 ipcMain.on('STREAM_DATA', (event, arg) => {
+  // destroy old socket if it exists
   if (streamSockets.raw.hasOwnProperty(arg) && streamSockets.raw[arg] instanceof net.Socket) {
     streamSockets.raw[arg].destroy()
     streamSockets.raw[arg] = null
   }
 
+  if (streamCache.raw.hasOwnProperty(arg)) {
+    if (streamCache.raw[arg].hasOwnProperty('timer')) {
+      clearInterval(streamCache.raw[arg].timer);
+    }
+
+    streamCache.raw[arg].cache = [];
+    streamCache.raw[arg].timer = setInterval(() => {
+      if (streamCache.raw[arg].cache.length != 0) {
+        event.sender.send('STREAM_DATA', {arg: arg, status: 'OK', data: streamCache.raw[arg].cache});
+        streamCache.raw[arg].cache = [];
+      }
+    }, 100);
+  }
+
   streamSockets.raw[arg] = net.createConnection(sAddress, () => {
     streamSockets.raw[arg].on('data', (data) => {
-      var sData = data.toString()
-      console.log('data: ', sData)
+      var sData = data.toString();
+
+      var arr = [];
+
+      for (var i=0; i<18; i+=2) {
+        var result;
+
+        var sign = data[i] & (1 << 7);
+        var x = (((data[i] & 0xFF) << 8) | (data[i+1] & 0xFF));
+
+        if (sign) {
+          result = 0xFFFF0000 | x;  // fill in most significant bits with 1's
+        } else {
+          result = x;
+        }
+        arr.push(result);
+      }
 
       if (sData.startsWith('OK')) {
-        event.sender.send('STREAM_DATA', {arg: arg, status: 'OK', data: null})
+        event.sender.send('STREAM_DATA', {arg: arg, status: 'OK', data: null});
+        streamSockets.raw[arg].write('START_STREAM');
       } else if (sData.startsWith('KO')) {
-        event.sender.send('STREAM_DATA', {arg: arg, status: 'KO', data: sData})
+        event.sender.send('STREAM_DATA', {arg: arg, status: 'KO', data: sData});
       } else {
-        event.sender.send('STREAM_DATA', {arg: arg, status: 'OK', data: sData})
+        streamCache.raw[arg].cache.push(arr);
       }
     })
 
-    streamSockets.raw[arg].write('STREAM_DATA ' + arg)
-  })
+    streamSockets.raw[arg].write('STREAM_DATA ' + arg + ' bitearray');
+  });
 
   streamSockets.raw[arg].on('error', (err) => {
     console.log('error: ', err)
@@ -119,7 +153,7 @@ ipcMain.on('STREAM_DATA', (event, arg) => {
   })
 })
 
-ipcMain.on('STREAM_ROTATIONS_DATA', (event, arg) => {
+ipcMain.on('STREAM_ROTATIONS_DATA', (event) => {
   if (streamSockets.rotations instanceof net.Socket) {
     streamSockets.rotations.destroy()
     streamSockets.rotations = null
@@ -129,10 +163,9 @@ ipcMain.on('STREAM_ROTATIONS_DATA', (event, arg) => {
     streamSockets.rotations.on('data', (data) => {
       var sData = data.toString()
 
-      console.log(sData);
-
       if (sData.startsWith('OK')) {
         event.sender.send('STREAM_ROTATIONS_DATA', {status: 'OK', data: null})
+        streamSockets.rotations.write('START_STREAM');
       } else if (sData.startsWith('KO')) {
         event.sender.send('STREAM_ROTATIONS_DATA', {status: 'KO', data: sData})
       } else {
@@ -155,3 +188,15 @@ ipcMain.on('STREAM_ROTATIONS_DATA', (event, arg) => {
     streamSockets.rotations = null
   })
 })
+
+ipcMain.on('START_STREAM', (event, arg) => {
+  if (streamSockets.raw.hasOwnProperty(arg) && streamSockets.raw[arg] instanceof net.Socket) {
+    streamSockets.raw[arg].write('START_STREAM');
+  }
+});
+
+ipcMain.on('PAUSE_STREAM', (event, arg) => {
+  if (streamSockets.raw.hasOwnProperty(arg) && streamSockets.raw[arg] instanceof net.Socket) {
+    streamSockets.raw[arg].write('PAUSE_STREAM');
+  }
+});

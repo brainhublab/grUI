@@ -35,6 +35,7 @@
     "electron-devtools-installer": "^2.2.3",
     "eslint": "^5.5.0",
     "eslint-config-google": "^0.10.0",
+    "eslint-plugin-react": "^7.14.2",
     "file-loader": "^1.1.11",
     "gltf-loader-2": "0.0.3",
     "history": "^4.7.2",

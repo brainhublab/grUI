@@ -1,19 +1,30 @@
 import { combineReducers } from 'redux'
 
 const parseData = (data) => {
-  let out = {}
-  let parts = data.split(' ')
+  let out = {
+    'acc': [],
+    'gyro': [],
+    'mag': [],
+  };
 
-  out['acc'] = parts[1].split(',').map((v) => parseFloat(v))
-  out['gyro'] = parts[2].split(',').map((v) => parseFloat(v))
-  out['mag'] = parts[3].split(',').map((v) => parseFloat(v))
+  data.forEach((arr) => {
+    let acc = arr.slice(0,3);
+    let gyro = arr.slice(3, 6);
+    let mag = arr.slice(6);
 
-  return out
+    for (let i = 0; i < 3; i++) {
+      out.acc[i].push(acc[i]);
+      out.gyro[i].push(gyro[i]);
+      out.mag[i].push(mag[i]);
+    }
+  });
+
+  return out;
 }
 
 const ChartReducer = (state={}, action) => {
   switch(action.type) {
-    case('ADD_DATA'):
+    case('ADD_DATA'): {
       let data = parseData(action.data);
       return Object.assign({}, state, {
         bigCharts: state.bigCharts.map((val, index) => {
@@ -44,7 +55,7 @@ const ChartReducer = (state={}, action) => {
             })
           }
         }),
-        smallCharts: state.smallCharts.map((val, index) => {
+        smallCharts: state.smallCharts.map((val) => {
           return Object.assign({}, val, {
             data: Object.assign({}, val.data, {
               datasets: val.data.datasets.map((v, i) => {
@@ -63,12 +74,13 @@ const ChartReducer = (state={}, action) => {
           })
         })
       })
+    }
   }
 }
 
 const RawChartsReducer = (state={}, action) => {
   switch(action.type) {
-    case('ADD_DATA'):
+    case('ADD_DATA'): {
       let updatedChart = {}
       let key = action.chartIndex
 
@@ -79,7 +91,7 @@ const RawChartsReducer = (state={}, action) => {
       updatedChart[key] = ChartReducer(state[key], action)
 
       return Object.assign({}, state, updatedChart);
-      break;
+    }
     default:
       return state;
   }
@@ -87,7 +99,7 @@ const RawChartsReducer = (state={}, action) => {
 
 const RotationChartsReducer = (state={}, action) => {
   switch(action.type) {
-    case('ADD_ROTATIONS_DATA'):
+    case('ADD_ROTATIONS_DATA'): {
       let parts = action.data.split(' ')
       return Object.assign({}, state, {
         data: Object.assign({}, state.data, {
@@ -98,7 +110,7 @@ const RotationChartsReducer = (state={}, action) => {
           })
         })
       })
-      break
+    }
     default:
       return state
   }

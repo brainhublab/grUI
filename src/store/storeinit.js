@@ -68,7 +68,9 @@ export default {
         index: 'Index',
         middle: 'Middle',
         ring: 'Ring',
-        pinky: 'Pinky'
+        pinky: 'Pinky',
+        pinky2: 'Pinky2',
+        pinky3: 'Pinky3',
     },
     //   data: [
     //     {
@@ -94,6 +96,8 @@ export default {
                 middle: genCharts(),
                 ring: genCharts(),
                 pinky: genCharts(),
+                pinky2: genCharts(),
+                pinky3: genCharts(),
             },
             rotations: genChart('Rotations data', ['#f00', '#0f0', '#00f', '#ff0', '#0ff', '#f0f', '#8ff', '#f8f'], CHART_SIZE_NORMAL, 8)
         },

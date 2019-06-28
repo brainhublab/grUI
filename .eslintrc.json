@@ -1,5 +1,6 @@
 {
     "env": {
+        "node": true,
         "browser": true,
         "es6": true
     },
@@ -17,7 +18,8 @@
     "rules": {
         "indent": [
             "error",
-            4
+            2,
+            { "SwitchCase": 1 }
         ],
         "linebreak-style": [
             "error",
@@ -28,10 +30,13 @@
             "single"
         ],
         "semi": [
-            "error",
-            "always"
+            "off"
         ],
+        "no-console": "off",
         "react/jsx-uses-vars": 2,
         "react/jsx-uses-react": 2
+    },
+    "globals": {
+      "require": true
     }
 }
