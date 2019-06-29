@@ -130,7 +130,6 @@ ipcMain.on('STREAM_DATA', (event, arg) => {
 
       if (sData.startsWith('OK')) {
         event.sender.send('STREAM_DATA', {arg: arg, status: 'OK', data: null});
-        streamSockets.raw[arg].write('START_STREAM');
       } else if (sData.startsWith('KO')) {
         event.sender.send('STREAM_DATA', {arg: arg, status: 'KO', data: sData});
       } else {
@@ -167,7 +166,6 @@ ipcMain.on('STREAM_ROTATIONS_DATA', (event) => {
 
       if (sData.startsWith('OK')) {
         event.sender.send('STREAM_ROTATIONS_DATA', {status: 'OK', data: null})
-        streamSockets.rotations.write('START_STREAM');
       } else if (sData.startsWith('KO')) {
         event.sender.send('STREAM_ROTATIONS_DATA', {status: 'KO', data: sData})
       } else {
@@ -190,15 +188,3 @@ ipcMain.on('STREAM_ROTATIONS_DATA', (event) => {
     streamSockets.rotations = null
   })
 })
-
-ipcMain.on('START_STREAM', (event, arg) => {
-  if (streamSockets.raw.hasOwnProperty(arg) && streamSockets.raw[arg] instanceof net.Socket) {
-    streamSockets.raw[arg].write('START_STREAM');
-  }
-});
-
-ipcMain.on('PAUSE_STREAM', (event, arg) => {
-  if (streamSockets.raw.hasOwnProperty(arg) && streamSockets.raw[arg] instanceof net.Socket) {
-    streamSockets.raw[arg].write('PAUSE_STREAM');
-  }
-});
