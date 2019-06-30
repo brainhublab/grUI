@@ -29,7 +29,9 @@ function alert(s) {
 
 // ipc to main to start socket transfer
 ipcRenderer.on('STREAM_DATA', (event, data) => {
+  console.log('DATA', data);
   if (data.status == 'OK' && data.data) {
+
     store.dispatch(addData(data.arg, data.data));
   } else if (data.status == 'KO') {
     if (data.data instanceof Object && data.data.hasOwnProperty('errno')) {

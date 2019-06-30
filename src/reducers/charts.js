@@ -13,9 +13,9 @@ const parseData = (data) => {
     let mag = arr.slice(6);
 
     for (let i = 0; i < 3; i++) {
-      out.acc[i].push(acc[i]);
-      out.gyro[i].push(gyro[i]);
-      out.mag[i].push(mag[i]);
+      out.acc.push(acc[i]);
+      out.gyro.push(gyro[i]);
+      out.mag.push(mag[i]);
     }
   });
 

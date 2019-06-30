@@ -103,9 +103,19 @@ ipcMain.on('STREAM_DATA', (event, arg) => {
   streamCache.raw[arg].cache = [];
   streamCache.raw[arg].timer = setInterval(() => {
     if (streamCache.raw[arg].cache.length != 0) {
+     const data = streamCache.raw[arg].cache.map((arr) => {
+       return arr.slice();
+     });
+       console.log('CACHE', data);//streamCache.raw[arg].cache);
+     event.sender.send('STREAM_DATA', {arg: arg, status: 'OK', data: data});
+     streamCache.raw[arg].cache = [];
+   }
+/*
+    if (streamCache.raw[arg].cache.length != 0) {
+      console.log(streamCache.raw[arg].cache);
       event.sender.send('STREAM_DATA', {arg: arg, status: 'OK', data: streamCache.raw[arg].cache});
       streamCache.raw[arg].cache = [];
-    }
+    }*/
   }, 100);
 
   streamSockets.raw[arg] = net.createConnection(sAddress, () => {
@@ -133,6 +143,7 @@ ipcMain.on('STREAM_DATA', (event, arg) => {
       } else if (sData.startsWith('KO')) {
         event.sender.send('STREAM_DATA', {arg: arg, status: 'KO', data: sData});
       } else {
+        //console.log(arr);
         streamCache.raw[arg].cache.push(arr);
       }
     })
