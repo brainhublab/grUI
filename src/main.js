@@ -139,8 +139,9 @@ ipcMain.on('STREAM_DATA', (event, arg) => {
 
       if (sData.startsWith('OK')) {
         event.sender.send('STREAM_DATA', {arg: arg, status: 'OK', data: null});
-        if (data !== null) {
-          streamSockets.raw[arg].uuid = sData;
+        const parts = sData.split(' ');
+        if (parts.length > 1) {
+          streamSockets.raw[arg].uuid = parts[1];
         }
       } else if (sData.startsWith('KO')) {
         event.sender.send('STREAM_DATA', {arg: arg, status: 'KO', data: sData});
@@ -187,8 +188,9 @@ ipcMain.on('STREAM_ROTATIONS_DATA', (event) => {
 
       if (sData.startsWith('OK')) {
         event.sender.send('STREAM_ROTATIONS_DATA', {status: 'OK', data: null});
-        if (data !== null) {
-          streamSockets.rotations.uuid = sData;
+        const parts = sData.split(' ');
+        if (parts.length > 1) {
+          streamSockets.rotations.uuid = parts[1];
         }
       } else if (sData.startsWith('KO')) {
         event.sender.send('STREAM_ROTATIONS_DATA', {status: 'KO', data: sData});
