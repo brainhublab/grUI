@@ -87,9 +87,14 @@ var streamCache = {
 
 ipcMain.on('STREAM_DATA', (event, arg) => {
   // destroy old socket if it exists
-  if (streamSockets.raw.hasOwnProperty(arg) && streamSockets.raw[arg] instanceof net.Socket) {
-    streamSockets.raw[arg].destroy()
-    streamSockets.raw[arg] = null
+  if (streamSockets.raw.hasOwnProperty(arg) && streamSockets.raw[arg].socket instanceof net.Socket) {
+    streamSockets.raw[arg].socket.destroy()
+    streamSockets.raw[arg].socket = null
+  } else if (!streamSockets.raw.hasOwnProperty(arg)) {
+    streamSockets.raw[arg] = {
+      socket: null,
+      uuid: '',
+    };
   }
 
   if (streamCache.raw.hasOwnProperty(arg)) {
@@ -103,23 +108,17 @@ ipcMain.on('STREAM_DATA', (event, arg) => {
   streamCache.raw[arg].cache = [];
   streamCache.raw[arg].timer = setInterval(() => {
     if (streamCache.raw[arg].cache.length != 0) {
-     const data = streamCache.raw[arg].cache.map((arr) => {
-       return arr.slice();
-     });
-       console.log('CACHE', data);//streamCache.raw[arg].cache);
-     event.sender.send('STREAM_DATA', {arg: arg, status: 'OK', data: data});
-     streamCache.raw[arg].cache = [];
-   }
-/*
-    if (streamCache.raw[arg].cache.length != 0) {
-      console.log(streamCache.raw[arg].cache);
-      event.sender.send('STREAM_DATA', {arg: arg, status: 'OK', data: streamCache.raw[arg].cache});
+      const data = streamCache.raw[arg].cache.map((arr) => {
+        return arr.slice();
+      });
+      console.log('CACHE', data);
+      event.sender.send('STREAM_DATA', {arg: arg, status: 'OK', data: data});
       streamCache.raw[arg].cache = [];
-    }*/
+    }
   }, 100);
 
-  streamSockets.raw[arg] = net.createConnection(sAddress, () => {
-    streamSockets.raw[arg].on('data', (data) => {
+  streamSockets.raw[arg].socket = net.createConnection(sAddress, () => {
+    streamSockets.raw[arg].socket.on('data', (data) => {
       var sData = data.toString();
 
       var arr = [];
@@ -140,62 +139,80 @@ ipcMain.on('STREAM_DATA', (event, arg) => {
 
       if (sData.startsWith('OK')) {
         event.sender.send('STREAM_DATA', {arg: arg, status: 'OK', data: null});
+        if (data !== null) {
+          streamSockets.raw[arg].uuid = sData;
+        }
       } else if (sData.startsWith('KO')) {
         event.sender.send('STREAM_DATA', {arg: arg, status: 'KO', data: sData});
       } else {
-        //console.log(arr);
         streamCache.raw[arg].cache.push(arr);
       }
-    })
+    });
 
-    streamSockets.raw[arg].write('STREAM_DATA ' + arg + ' bitearray');
+    if (streamSockets.raw[arg].uuid === '') {
+      streamSockets.raw[arg].socket.write('STREAM_DATA ' + arg + ' bitearray ' + streamSockets.raw[arg].uuid);
+    } else {
+      streamSockets.raw[arg].socket.write('STREAM_DATA ' + arg + ' bitearray');
+    }
   });
 
-  streamSockets.raw[arg].on('error', (err) => {
+  streamSockets.raw[arg].socket.on('error', (err) => {
     console.log('error: ', err)
     event.sender.send('STREAM_DATA', {arg: arg, status: 'KO', data: err})
-    streamSockets.raw[arg] = null
+    streamSockets.raw[arg].socket = null
   })
 
-  streamSockets.raw[arg].on('close', (hadError) => {
+  streamSockets.raw[arg].socket.on('close', (hadError) => {
     if (!hadError) {
       event.sender.send('STREAM_DATA', {arg: arg, status: 'KO', data: 'Connection closed'})
     }
-    streamSockets.raw[arg] = null
+    streamSockets.raw[arg].socket = null
   })
 })
 
 ipcMain.on('STREAM_ROTATIONS_DATA', (event) => {
-  if (streamSockets.rotations instanceof net.Socket) {
-    streamSockets.rotations.destroy()
-    streamSockets.rotations = null
+  if (streamSockets.rotations !== null && streamSockets.rotations.socket instanceof net.Socket) {
+    streamSockets.rotations.socket.destroy()
+    streamSockets.rotations.socket = null
+  } else if (streamSockets.rotations === null) {
+    streamSockets.rotations = {
+      socket: null,
+      uuid: '',
+    };
   }
 
-  streamSockets.rotations = net.createConnection(sAddress, () => {
-    streamSockets.rotations.on('data', (data) => {
-      var sData = data.toString()
+  streamSockets.rotations.socket = net.createConnection(sAddress, () => {
+    streamSockets.rotations.socket.on('data', (data) => {
+      var sData = data.toString();
 
       if (sData.startsWith('OK')) {
-        event.sender.send('STREAM_ROTATIONS_DATA', {status: 'OK', data: null})
+        event.sender.send('STREAM_ROTATIONS_DATA', {status: 'OK', data: null});
+        if (data !== null) {
+          streamSockets.rotations.uuid = sData;
+        }
       } else if (sData.startsWith('KO')) {
-        event.sender.send('STREAM_ROTATIONS_DATA', {status: 'KO', data: sData})
+        event.sender.send('STREAM_ROTATIONS_DATA', {status: 'KO', data: sData});
       } else {
-        event.sender.send('STREAM_ROTATIONS_DATA', {status: 'OK', data: sData})
+        event.sender.send('STREAM_ROTATIONS_DATA', {status: 'OK', data: sData});
       }
     })
 
-    streamSockets.rotations.write('STREAM_ROTATIONS_DATA')
-  })
-
-  streamSockets.rotations.on('error', (err) => {
-    event.sender.send('STREAM_ROTATIONS_DATA', {status: 'KO', data: err})
-    streamSockets.rotations = null
-  })
-
-  streamSockets.rotations.on('close', (hadError) => {
-    if (!hadError) {
-      event.sender.send('STREAM_ROTATIONS_DATA', {status: 'KO', data: 'Connection closed'})
+    if (streamSockets.rotations.uuid !== '') {
+      streamSockets.rotations.socket.write('STREAM_ROTATIONS_DATA ' + streamSockets.rotations.uuid);
+    } else {
+      streamSockets.rotations.socket.write('STREAM_ROTATIONS_DATA');
     }
-    streamSockets.rotations = null
+  })
+
+  streamSockets.rotations.socket.on('error', (err) => {
+    event.sender.send('STREAM_ROTATIONS_DATA', {status: 'KO', data: err});
+    streamSockets.rotations.socket = null;
+  })
+
+  streamSockets.rotations.socket.on('close', (hadError) => {
+    if (!hadError) {
+      event.sender.send('STREAM_ROTATIONS_DATA', {status: 'KO', data: 'Connection closed'});
+    }
+    streamSockets.rotations.socket = null;
   })
 })
