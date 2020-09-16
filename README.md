@@ -1,8 +1,8 @@
-<p align="center">
+<div align="center">
   <a>
     <img width="70%" src="./docs/images/screenshot.png">
   </a>
-</p>
+</div>
 
 <div align="center">
   <h1>👋 GR UI</h1>
